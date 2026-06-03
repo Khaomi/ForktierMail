@@ -185,7 +185,7 @@ public class MailHub : Hub<IMailClient>, IMailHub
     public Task<ServerHandshakeData?> GetHandshakeData()
     {
         if (!Context.Items.TryGetValue("ForkId", out var forkIdValue) || forkIdValue is not int sourceForkId)
-            return null;
+            return Task.FromResult<ServerHandshakeData?>(null);
 
         var handshake = new ServerHandshakeData
         {
@@ -231,7 +231,7 @@ public class MailHub : Hub<IMailClient>, IMailHub
             ]
         };
 
-        return Task.FromResult(handshake);
+        return Task.FromResult<ServerHandshakeData?>(handshake);
     }
 
     public override async Task OnConnectedAsync()
