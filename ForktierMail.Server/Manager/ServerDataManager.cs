@@ -16,7 +16,7 @@ public class ServerDataManager : DefaultDataManager
     }
 
     /// <summary>
-    /// Seeds the database with initial data for development/testing purposes
+    ///     Seeds the database with initial data for development/testing purposes
     /// </summary>
     public async Task SeedDevelopment()
     {

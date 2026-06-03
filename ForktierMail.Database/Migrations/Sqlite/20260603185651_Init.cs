@@ -1,154 +1,146 @@
-﻿using System;
+﻿#nullable disable
+
 using Microsoft.EntityFrameworkCore.Migrations;
 
-#nullable disable
+namespace ForktierMail.Database.Migrations.Sqlite;
 
-namespace ForktierMail.Database.Migrations.Sqlite
+/// <inheritdoc />
+public partial class Init : Migration
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.CreateTable(
-                name: "Forks",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: false, defaultValue: ""),
-                    ApiKey = table.Column<string>(type: "TEXT", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Forks", x => x.Id);
-                });
+        migrationBuilder.CreateTable(
+            "Forks",
+            table => new
+            {
+                Id = table.Column<int>("INTEGER", nullable: false)
+                    .Annotation("Sqlite:Autoincrement", true),
+                Name = table.Column<string>("TEXT", nullable: false, defaultValue: ""),
+                ApiKey = table.Column<string>("TEXT", nullable: false),
+                CreatedAt = table.Column<DateTime>("TEXT", nullable: false),
+                UpdatedAt = table.Column<DateTime>("TEXT", nullable: false)
+            },
+            constraints: table => { table.PrimaryKey("PK_Forks", x => x.Id); });
 
-            migrationBuilder.CreateTable(
-                name: "Players",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Players", x => x.Id);
-                });
+        migrationBuilder.CreateTable(
+            "Players",
+            table => new
+            {
+                Id = table.Column<Guid>("TEXT", nullable: false),
+                CreatedAt = table.Column<DateTime>("TEXT", nullable: false),
+                UpdatedAt = table.Column<DateTime>("TEXT", nullable: false)
+            },
+            constraints: table => { table.PrimaryKey("PK_Players", x => x.Id); });
 
-            migrationBuilder.CreateTable(
-                name: "Characters",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    ForkId = table.Column<int>(type: "INTEGER", nullable: false),
-                    PlayerId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    CharacterId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false, defaultValue: ""),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Characters", x => x.Id);
-                    table.UniqueConstraint("AK_Characters_ForkId_CharacterId", x => new { x.ForkId, x.CharacterId });
-                    table.ForeignKey(
-                        name: "FK_Characters_Forks_ForkId",
-                        column: x => x.ForkId,
-                        principalTable: "Forks",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Characters_Players_PlayerId",
-                        column: x => x.PlayerId,
-                        principalTable: "Players",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+        migrationBuilder.CreateTable(
+            "Characters",
+            table => new
+            {
+                Id = table.Column<int>("INTEGER", nullable: false)
+                    .Annotation("Sqlite:Autoincrement", true),
+                ForkId = table.Column<int>("INTEGER", nullable: false),
+                PlayerId = table.Column<Guid>("TEXT", nullable: false),
+                CharacterId = table.Column<int>("INTEGER", nullable: false),
+                Name = table.Column<string>("TEXT", nullable: false, defaultValue: ""),
+                CreatedAt = table.Column<DateTime>("TEXT", nullable: false),
+                UpdatedAt = table.Column<DateTime>("TEXT", nullable: false)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey("PK_Characters", x => x.Id);
+                table.UniqueConstraint("AK_Characters_ForkId_CharacterId", x => new { x.ForkId, x.CharacterId });
+                table.ForeignKey(
+                    "FK_Characters_Forks_ForkId",
+                    x => x.ForkId,
+                    "Forks",
+                    "Id",
+                    onDelete: ReferentialAction.Cascade);
+                table.ForeignKey(
+                    "FK_Characters_Players_PlayerId",
+                    x => x.PlayerId,
+                    "Players",
+                    "Id",
+                    onDelete: ReferentialAction.Cascade);
+            });
 
-            migrationBuilder.CreateTable(
-                name: "Mails",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Type = table.Column<int>(type: "INTEGER", nullable: false, defaultValue: 1),
-                    Content = table.Column<string>(type: "TEXT", nullable: false, defaultValue: ""),
-                    SenderForkId = table.Column<int>(type: "INTEGER", nullable: false),
-                    SenderId = table.Column<int>(type: "INTEGER", nullable: false),
-                    RecipientForkId = table.Column<int>(type: "INTEGER", nullable: false),
-                    RecipientId = table.Column<int>(type: "INTEGER", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Mails", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Mails_Characters_RecipientForkId_RecipientId",
-                        columns: x => new { x.RecipientForkId, x.RecipientId },
-                        principalTable: "Characters",
-                        principalColumns: new[] { "ForkId", "CharacterId" });
-                    table.ForeignKey(
-                        name: "FK_Mails_Characters_SenderForkId_SenderId",
-                        columns: x => new { x.SenderForkId, x.SenderId },
-                        principalTable: "Characters",
-                        principalColumns: new[] { "ForkId", "CharacterId" });
-                });
+        migrationBuilder.CreateTable(
+            "Mails",
+            table => new
+            {
+                Id = table.Column<int>("INTEGER", nullable: false)
+                    .Annotation("Sqlite:Autoincrement", true),
+                Type = table.Column<int>("INTEGER", nullable: false, defaultValue: 1),
+                Content = table.Column<string>("TEXT", nullable: false, defaultValue: ""),
+                SenderForkId = table.Column<int>("INTEGER", nullable: false),
+                SenderId = table.Column<int>("INTEGER", nullable: false),
+                RecipientForkId = table.Column<int>("INTEGER", nullable: false),
+                RecipientId = table.Column<int>("INTEGER", nullable: false),
+                CreatedAt = table.Column<DateTime>("TEXT", nullable: false),
+                UpdatedAt = table.Column<DateTime>("TEXT", nullable: false)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey("PK_Mails", x => x.Id);
+                table.ForeignKey(
+                    "FK_Mails_Characters_RecipientForkId_RecipientId",
+                    x => new { x.RecipientForkId, x.RecipientId },
+                    "Characters",
+                    new[] { "ForkId", "CharacterId" });
+                table.ForeignKey(
+                    "FK_Mails_Characters_SenderForkId_SenderId",
+                    x => new { x.SenderForkId, x.SenderId },
+                    "Characters",
+                    new[] { "ForkId", "CharacterId" });
+            });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Characters_ForkId_CharacterId",
-                table: "Characters",
-                columns: new[] { "ForkId", "CharacterId" },
-                unique: true);
+        migrationBuilder.CreateIndex(
+            "IX_Characters_ForkId_CharacterId",
+            "Characters",
+            new[] { "ForkId", "CharacterId" },
+            unique: true);
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Characters_PlayerId",
-                table: "Characters",
-                column: "PlayerId");
+        migrationBuilder.CreateIndex(
+            "IX_Characters_PlayerId",
+            "Characters",
+            "PlayerId");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Forks_ApiKey",
-                table: "Forks",
-                column: "ApiKey",
-                unique: true);
+        migrationBuilder.CreateIndex(
+            "IX_Forks_ApiKey",
+            "Forks",
+            "ApiKey",
+            unique: true);
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Forks_Name",
-                table: "Forks",
-                column: "Name",
-                unique: true);
+        migrationBuilder.CreateIndex(
+            "IX_Forks_Name",
+            "Forks",
+            "Name",
+            unique: true);
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Mails_RecipientForkId_RecipientId",
-                table: "Mails",
-                columns: new[] { "RecipientForkId", "RecipientId" });
+        migrationBuilder.CreateIndex(
+            "IX_Mails_RecipientForkId_RecipientId",
+            "Mails",
+            new[] { "RecipientForkId", "RecipientId" });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Mails_SenderForkId_SenderId",
-                table: "Mails",
-                columns: new[] { "SenderForkId", "SenderId" });
-        }
+        migrationBuilder.CreateIndex(
+            "IX_Mails_SenderForkId_SenderId",
+            "Mails",
+            new[] { "SenderForkId", "SenderId" });
+    }
 
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropTable(
-                name: "Mails");
+    /// <inheritdoc />
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.DropTable(
+            "Mails");
 
-            migrationBuilder.DropTable(
-                name: "Characters");
+        migrationBuilder.DropTable(
+            "Characters");
 
-            migrationBuilder.DropTable(
-                name: "Forks");
+        migrationBuilder.DropTable(
+            "Forks");
 
-            migrationBuilder.DropTable(
-                name: "Players");
-        }
+        migrationBuilder.DropTable(
+            "Players");
     }
 }

@@ -111,7 +111,7 @@ public class ServerIntegrationTests
             .WithUrl(new Uri(_factory.Server.BaseAddress, "/Mail?apiKey=key1"),
                 options => { options.HttpMessageHandlerFactory = _ => handler; })
             .WithAutomaticReconnect()
-                        .AddMessagePackProtocol()
+            .AddMessagePackProtocol()
             .Build();
 
         var client = new TestClient(hubConnection);
@@ -164,7 +164,7 @@ public class ServerIntegrationTests
             .WithUrl(new Uri(_factory.Server.BaseAddress, "/Mail?apiKey=key2"),
                 options => { options.HttpMessageHandlerFactory = _ => handler; })
             .WithAutomaticReconnect()
-                        .AddMessagePackProtocol()
+            .AddMessagePackProtocol()
             .Build();
 
         var client1 = new TestClient(hubConnection1);

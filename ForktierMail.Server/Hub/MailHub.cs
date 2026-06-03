@@ -20,13 +20,19 @@ public class MailHub : Hub<IMailClient>, IMailHub
 
     public async Task<SharedFork> GetIdentity()
     {
+#pragma warning disable CS8605 // Unboxing a possibly null value.
         var forkId = (int)Context.Items["ForkId"];
+#pragma warning restore CS8605 // Unboxing a possibly null value.
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
         var forkName = (string)Context.Items["ForkName"];
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 
         return new SharedFork
         {
             Id = forkId,
+#pragma warning disable CS8601 // Possible null reference assignment.
             Name = forkName
+#pragma warning restore CS8601 // Possible null reference assignment.
         };
     }
 
