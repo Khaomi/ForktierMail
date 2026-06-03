@@ -1,0 +1,12 @@
+<Solution>
+    <Configurations>
+        <Platform Name="Any CPU"/>
+        <Platform Name="x64"/>
+        <Platform Name="x86"/>
+    </Configurations>
+    <Project Path="ForktierMail.Server/ForktierMail.Server.csproj"/>
+    <Project Path="ForktierMail.Shared/ForktierMail.Shared.csproj"/>
+    <Project Path="ForktierMail.Client/ForktierMail.Client.csproj"/>
+    <Project Path="ForktierMail.Database/ForktierMail.Database.csproj"/>
+    <Project Path="ForktierMail.Tests/ForktierMail.Tests.csproj"/>
+</Solution>
