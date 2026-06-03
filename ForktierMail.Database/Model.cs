@@ -104,6 +104,55 @@ public class ServerDbContext : DbContext
             e.HasIndex(m => new { m.SenderForkId, m.SenderId });
             e.HasIndex(m => new { m.RecipientForkId, m.RecipientId });
         });
+
+        var isPostgres = Database.ProviderName == "Npgsql.EntityFrameworkCore.PostgreSQL";
+
+        if (isPostgres) OnPostgresModelCreating(modelBuilder);
+        else OnSqliteModelCreating(modelBuilder);
+    }
+
+    protected void OnPostgresModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Character>(e => { e.HasKey(c => new { c.ForkId, c.CharacterId }); });
+
+        modelBuilder.Entity<Mail>(e =>
+        {
+            e.HasOne(m => m.Sender)
+                .WithMany(c => c.SentMails)
+                .HasForeignKey(m => new { m.SenderForkId, m.SenderId })
+                .HasPrincipalKey(c => new { c.ForkId, c.CharacterId })
+                .OnDelete(DeleteBehavior.Cascade);
+
+            e.HasOne(m => m.Recipient)
+                .WithMany(c => c.ReceivedMails)
+                .HasForeignKey(m => new { m.RecipientForkId, m.RecipientId })
+                .HasPrincipalKey(c => new { c.ForkId, c.CharacterId })
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+    }
+
+    protected void OnSqliteModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Character>(e =>
+        {
+            e.HasKey(c => c.Id);
+            e.HasIndex(c => new { c.ForkId, c.CharacterId }).IsUnique();
+        });
+
+        modelBuilder.Entity<Mail>(e =>
+        {
+            e.HasOne(m => m.Sender)
+                .WithMany(c => c.SentMails)
+                .HasForeignKey(m => new { m.SenderForkId, m.SenderId })
+                .HasPrincipalKey(c => new { c.ForkId, c.CharacterId })
+                .OnDelete(DeleteBehavior.ClientCascade);
+
+            e.HasOne(m => m.Recipient)
+                .WithMany(c => c.ReceivedMails)
+                .HasForeignKey(m => new { m.RecipientForkId, m.RecipientId })
+                .HasPrincipalKey(c => new { c.ForkId, c.CharacterId })
+                .OnDelete(DeleteBehavior.ClientCascade);
+        });
     }
 }
 

@@ -4,20 +4,19 @@
   </PropertyGroup>
   <!-- Credits: Wizden -->
   <ItemGroup>
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.7">
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.8">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageVersion>
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.7" />
-    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.8" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.2" />
   </ItemGroup>
   <ItemGroup>
-    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Server" Version="10.0.7" />
-    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Common" Version="10.0.7" />
-    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Client" Version="10.0.7" />
-
+    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Server" Version="10.0.8" />
+    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Common" Version="10.0.8" />
+    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Client" Version="10.0.8" />
     <!-- Dependneices -->
-    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" Version="10.0.7" />
+    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" Version="10.0.8" />
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Include="coverlet.collector" Version="6.0.2" />

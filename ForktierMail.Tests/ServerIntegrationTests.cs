@@ -13,21 +13,6 @@ using MailType = ForktierMail.Shared.Models.MailType;
 
 namespace ForktierMail.Tests;
 
-public sealed class SqliteDbContextFactoryAdapter : IDbContextFactory<ServerDbContext>
-{
-    private readonly IDbContextFactory<SqliteServerDbContext> _inner;
-
-    public SqliteDbContextFactoryAdapter(IDbContextFactory<SqliteServerDbContext> inner)
-    {
-        _inner = inner;
-    }
-
-    public ServerDbContext CreateDbContext()
-    {
-        return _inner.CreateDbContext();
-    }
-}
-
 public class TestServerFactory : WebApplicationFactory<Application>
 {
     private SqliteConnection? _connection;
@@ -42,17 +27,11 @@ public class TestServerFactory : WebApplicationFactory<Application>
             _connection = new SqliteConnection("DataSource=:memory:");
             _connection.Open();
 
-            services.AddPooledDbContextFactory<SqliteServerDbContext>(opts => { opts.UseSqlite(_connection); });
-
-            services.AddSingleton<IDbContextFactory<ServerDbContext>>(sp =>
-            {
-                var sqliteFactory = sp.GetRequiredService<IDbContextFactory<SqliteServerDbContext>>();
-                return new SqliteDbContextFactoryAdapter(sqliteFactory);
-            });
+            services.AddPooledDbContextFactory<ServerDbContext>(opts => { opts.UseSqlite(_connection); });
 
             var sp = services.BuildServiceProvider();
             using var scope = sp.CreateScope();
-            var dbFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<SqliteServerDbContext>>();
+            var dbFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<ServerDbContext>>();
             using var db = dbFactory.CreateDbContext();
             db.Database.EnsureCreated();
 

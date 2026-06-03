@@ -36,6 +36,21 @@ using SQLitePCL;
 
 namespace ForktierMail.Database;
 
+public sealed class PostgresServerDbContext : ServerDbContext
+{
+    public PostgresServerDbContext(DbContextOptions options) : base(options)
+    {
+    }
+}
+
+
+public sealed class SqliteServerDbContext : ServerDbContext
+{
+    public SqliteServerDbContext(DbContextOptions options) : base(options)
+    {
+    }
+}
+
 public sealed class DesignTimeContextFactoryPostgres : IDesignTimeDbContextFactory<PostgresServerDbContext>
 {
     public PostgresServerDbContext CreateDbContext(string[] args)
