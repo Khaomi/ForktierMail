@@ -25,7 +25,7 @@ public class ForktierMailClient : IAsyncDisposable
             .Build();
 
         connection.On<SharedMail, bool>(nameof(IMailClient.OnMailRecieved), OnMailRecieved);
-        connection.On<ServerHandshakeData, bool>(nameof(IMailClient.OnServerHandshake), OnServerHandshake);
+        // connection.On<ServerHandshakeData, bool>(nameof(IMailClient.OnServerHandshake), OnServerHandshake);
 
         connection.On<SharedPlayer>(nameof(IMailClient.OnPlayerAdded), OnPlayerAdded);
         connection.On<SharedCharacter>(nameof(IMailClient.OnCharacterAdded), OnCharacterAdded);
@@ -45,7 +45,7 @@ public class ForktierMailClient : IAsyncDisposable
         dataManger = new ClientDataManger(this);
 
         connection.On<SharedMail, bool>(nameof(IMailClient.OnMailRecieved), OnMailRecieved);
-        connection.On<ServerHandshakeData, bool>(nameof(IMailClient.OnServerHandshake), OnServerHandshake);
+        // connection.On<ServerHandshakeData, bool>(nameof(IMailClient.OnServerHandshake), OnServerHandshake);
 
         connection.On<SharedPlayer>(nameof(IMailClient.OnPlayerAdded), OnPlayerAdded);
         connection.On<SharedCharacter>(nameof(IMailClient.OnCharacterAdded), OnCharacterAdded);
@@ -73,7 +73,15 @@ public class ForktierMailClient : IAsyncDisposable
     {
         if (connection.State == HubConnectionState.Disconnected)
             await connection.StartAsync();
-        await OnServerHandshake(await connection.InvokeAsync<ServerHandshakeData>(nameof(IMailHub.GetHandshakeData)));
+
+        var handshakeData = await connection.InvokeAsync<ServerHandshakeData>(nameof(IMailHub.GetHandshakeData));
+        if (handshakeData is null)
+        {
+            await connection.StopAsync();
+            return;
+        }
+
+        await OnServerHandshake(handshakeData);
     }
 
     public virtual Task<SharedFork> GetIdentity()

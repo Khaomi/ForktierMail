@@ -5,7 +5,7 @@ namespace ForktierMail.Shared.Interface;
 public interface IMailClient
 {
     Task<bool> OnMailRecieved(SharedMail mail);
-    Task<bool> OnServerHandshake(ServerHandshakeData handshake);
+    // Task<bool> OnServerHandshake(ServerHandshakeData handshake);
 
     Task OnPlayerAdded(SharedPlayer player);
     Task OnCharacterAdded(SharedCharacter character);

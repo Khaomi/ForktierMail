@@ -16,5 +16,5 @@ public interface IMailHub
     Task<bool> UpdateCharacter(SharedCharacter character);
     Task<bool> DeleteMail(int mailId);
 
-    Task<ServerHandshakeData> GetHandshakeData();
+    Task<ServerHandshakeData?> GetHandshakeData();
 }

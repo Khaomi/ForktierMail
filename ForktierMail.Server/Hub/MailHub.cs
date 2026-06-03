@@ -182,10 +182,10 @@ public class MailHub : Hub<IMailClient>, IMailHub
         return Task.FromResult(true);
     }
 
-    public Task<ServerHandshakeData> GetHandshakeData()
+    public Task<ServerHandshakeData?> GetHandshakeData()
     {
         if (!Context.Items.TryGetValue("ForkId", out var forkIdValue) || forkIdValue is not int sourceForkId)
-            return Task.FromResult<ServerHandshakeData?>(null);
+            return null;
 
         var handshake = new ServerHandshakeData
         {
@@ -243,11 +243,10 @@ public class MailHub : Hub<IMailClient>, IMailHub
         var fork = _db.Forks.FirstOrDefault(f => f.ApiKey == apiKey.ToString());
         if (fork is null) throw new UnauthorizedAccessException("Invalid API Key");
 
-        Console.WriteLine($"[Hub] {fork.Name} ({fork.Id}) connected with API Key: {apiKey}");
-
         Context.Items["ForkId"] = fork.Id;
         Context.Items["ForkName"] = fork.Name;
         ConnectedForks.AddOrUpdate(fork.Id, Context.ConnectionId, (_, _) => Context.ConnectionId);
+
         await base.OnConnectedAsync();
     }
 
@@ -259,7 +258,6 @@ public class MailHub : Hub<IMailClient>, IMailHub
             ConnectedForks.TryRemove(forkId, out _);
             await Clients.All.OnForkRemoved(forkId);
         }
-
 
         await base.OnDisconnectedAsync(exception);
     }
